@@ -17,12 +17,14 @@
         overflow: hidden; background: #0e0e12;
       }
 
-      /* Full-viewport shell. Solid dark = clean loading backdrop + clean letterbox bars.
-         (No hero image: LapsFuse has no dedicated wide hero art, and square game art
-         looks oversized stretched into the side bars.) */
+      /* Full-viewport shell. The game's own key art, blurred and darkened, sits behind the loading
+         bar so a player can tell what is loading; #0e0e12 stays underneath as the fallback while
+         the JPG is still arriving, and is what paints the letterbox bars. Built by
+         Tools/bake_action_bg.py -> Tools/bake_loading_bg.py; keep this colour and the script's
+         GROUND identical. `cover` crops — never `100% 100%`, which distorts. */
       #unity-container {
         position: fixed; inset: 0;
-        background: #0e0e12;
+        background: #0e0e12 url('TemplateData/loading-bg.jpg') center / cover no-repeat;
       }
 
       /* Canvas is positioned by JS (letterbox). Must be TRANSPARENT so the hero shows
@@ -158,7 +160,7 @@
       // Fire-and-forget: fetch the PER-GAME icon and swap it in when it loads. Every failure path
       // falls back to the static baked-in icon. NEVER blocks or delays the Unity build download.
       (function loadTenantIcon() {
-        var DEFAULT_API_BASE = "https://api.staging.g-b.store";   // STAGING — matches GameBullEndpoints.BaseUrl
+        var DEFAULT_API_BASE = "https://api.staging.g-b.store";   /* GAMEBULL_API_BASE */  // patched by Tools > GameBull > Environment, together with GameBullEndpoints.BaseUrl
         var DEFAULT_GAME_ID  = "LAPS_FUSE";               // ?gameId= wins; this is a harmless fallback
 
         var logoEl    = document.querySelector("#unity-logo");
