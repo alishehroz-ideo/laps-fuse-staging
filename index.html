@@ -21,7 +21,12 @@
          bar so a player can tell what is loading; #0e0e12 stays underneath as the fallback while
          the JPG is still arriving, and is what paints the letterbox bars. Built by
          Tools/bake_action_bg.py -> Tools/bake_loading_bg.py; keep this colour and the script's
-         GROUND identical. `cover` crops — never `100% 100%`, which distorts. */
+         GROUND identical. `cover` crops — never `100% 100%`, which distorts.
+         THIS IMAGE IS TAKEN BACK OFF when the game starts - see the container.style.background
+         line beside the killEl() calls in createUnityInstance().then(), about 200 lines below.
+         Because this element paints the LETTERBOX BARS, leaving it set keeps a band of blurred
+         art above and below the game for the whole session. The two halves are forty lines and
+         one language apart, which is exactly how they got separated the first time. */
       #unity-container {
         position: fixed; inset: 0;
         background: #0e0e12 url('TemplateData/loading-bg.jpg') center / cover no-repeat;
@@ -235,6 +240,17 @@
           killEl("#unity-progress-percent");
           killEl("#unity-loading-bar");
           // No custom loading overlay/cover div in this template — nothing else to kill.
+
+          // The backdrop is a LOADING backdrop. #unity-container is the FULL VIEWPORT and the
+          // canvas is letterboxed inside it, so leaving the image set keeps painting it in the
+          // LETTERBOX BARS for the whole session - a band of blurred key art above and below
+          // the game, with a visible seam at the canvas edge. killEl() above clears the
+          // spinner, the icon and the progress bar; nothing clears the container. Drop back to
+          // the flat ground colour once Unity renders. Paired with the #unity-container rule in
+          // the CSS above - keep this colour identical to the one there and to GROUND in
+          // Tools/bake_loading_bg.py.
+          var container = document.querySelector("#unity-container");
+          if (container) container.style.background = "#0e0e12";
 
           resizeCanvas();
 
